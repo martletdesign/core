@@ -1,7 +1,7 @@
 {
   "family": "martlet",
   "label": "Martlet",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "themes": {
     "light": {
       "id": "martlet-light",

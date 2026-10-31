@@ -17,3 +17,7 @@ The compatibility rehearsal compares local packed candidates with the published 
 2. If approved separately, create the new identity by an authorized staging or publication action. Staging is publicly visible and is not a private test. Coordinate npm trusted-publisher configuration for `martletdesign/core` and `publish.yml` with the first approved release and its validation window.
 3. Approve a specific new version/tag and release, publish only under the separate authorization, then independently install and compare the actual registry artifact, integrity, exports and provenance. Preserve the old package and rollback pins.
 4. Only after verification, separately review and approve framework/site/workbench adoption, followed by any deployment. A shim or deprecation has its own approval; never unpublish old versions. See [release guard](releasing.md).
+
+## Proposed collision-free version
+
+Version 2.2.3 is an unpublished private proposal. The previous candidate version matches an existing GitHub release tag for the legacy theme package. Preserve that historic tag; the selected contrast correction remains included. The proposed version is not reserved on npm, and its downstream packages must be rebuilt and verified against the new tarball. Release, trusted-publisher configuration and any change to the private guard require separate authorization.
