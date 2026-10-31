@@ -1,7 +1,7 @@
 {
-  "name": "@martlet/theme",
+  "name": "@martlet/core",
   "version": "2.2.2",
-  "private": false,
+  "private": true,
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -59,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/martlettheme/npm.git"
+    "url": "git+https://github.com/martletdesign/core.git"
   },
   "homepage": "https://martletdesign.dev/",
   "keywords": [

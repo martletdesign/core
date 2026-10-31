@@ -1,27 +1,9 @@
-# Automated npm releases
+# Release and identity migration
 
-GitHub Actions publishes GitHub releases through npm trusted publishing (OIDC), using `.github/workflows/publish.yml`. It requires no npm token secret.
+This branch prepares the unpublished `@martlet/core` identity and is marked `private: true`. Existing `@martlet/theme` releases and their consumers remain separate. No package is staged, published, deprecated or un-published by this branch. The current version mirrors the source snapshot and is a proposal, not a reserved registry version.
 
-## One-time npm setup
+The existing `.github/workflows/publish.yml` is triggered by a published GitHub release and uses npm trusted publishing. The repository rename can invalidate prior bindings. An authorized npm administrator must review the current `@martlet/theme` binding and, after the new identity exists and release is separately approved, configure the exact `martletdesign/core`, `publish.yml` and environment binding for `@martlet/core`; do not assume old bindings redirected. Coordinate the short trusted-publisher validation window with the approved first release.
 
-Open [package settings](https://www.npmjs.com/package/@martlet/theme/access), then Trusted publishing, Add trusted publisher, GitHub Actions. Enter these exact values:
+Before any first release: verify namespace ownership and version availability, compare packed exports/assets, approve the version/tag and workflow behavior, remove the private guard in an explicitly reviewed change, and verify no release or downstream deployment can occur accidentally. Separately authorize registry staging or publication, verify the published artifact and provenance from a clean consumer, then update downstream Astro, React, websites and workbench on reviewed branches. Keep existing `@martlet/theme` installs and old versions available; deprecation or a shim requires its own decision. A release event can trigger publication; do not use a GitHub release as a smoke test.
 
-| Setting | Value |
-| --- | --- |
-| Organization/user | `martlettheme` |
-| Repository | `npm` |
-| Workflow filename | `publish.yml` |
-| Environment | Leave blank |
-| Allowed action | Enable direct `npm publish` |
-
-The workflow must be merged before use. New trusted publisher connections must complete their first publish within two days; otherwise recreate the connection. Existing package maintainers configure this on npm. No npm account settings are changed by this PR.
-
-## Release
-
-1. Merge reviewed version and changelog changes to `main`.
-2. Publish a GitHub pre-release for the experimental channel, or a stable release whose tag is exactly `v` plus `package.json`'s version.
-3. The workflow runs the full verification suite, checks tag/version/repository identity and ancestry in `main`, builds from a fresh install, and publishes to npm. Failed checks prevent publication.
-
-Release core 2.2.2 on `next` before Astro 1.2.2. The workflow publishes pre-releases to `next` and stable releases to `latest`. Verify the registry version and tag after each release before updating consumers. Re-running a successful release fails rather than overwriting an existing npm version. Public repositories produce provenance attestations; private repositories publish with provenance disabled because npm does not support those attestations from private source repositories. Repository visibility is unchanged.
-
-Reference: https://docs.npmjs.com/trusted-publishers/
+See [npm trusted publishers](https://docs.npmjs.com/trusted-publishers/) and [staged publishing](https://docs.npmjs.com/staged-publishing/). Staging is a registry mutation and requires separate authorization.

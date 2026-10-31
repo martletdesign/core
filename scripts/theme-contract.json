@@ -1,0 +1,46 @@
+{
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./css": "./dist/theme.css",
+    "./light.css": "./dist/light.css",
+    "./dark.css": "./dist/dark.css",
+    "./tokens.json": "./dist/tokens.json",
+    "./light.json": "./dist/light.json",
+    "./dark.json": "./dist/dark.json",
+    "./highlight-light.css": "./dist/highlight-light.css",
+    "./highlight-dark.css": "./dist/highlight-dark.css",
+    "./foundation.css": "./dist/foundation.css",
+    "./typography.css": "./dist/typography.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./components.css": "./dist/components.css",
+    "./full.css": "./dist/full.css",
+    "./foundation.json": "./dist/foundation.json",
+    "./design.json": "./dist/design.json",
+    "./capabilities.json": "./dist/capabilities.json",
+    "./package.json": "./package.json",
+    "./legacy.css": "./dist/legacy.css",
+    "./layout.css": "./dist/layout.css",
+    "./layout.json": "./dist/layout.json",
+    "./patterns.css": "./dist/patterns.css",
+    "./source-profile.css": "./dist/source-profile.css",
+    "./language.json": "./dist/language.json",
+    "./forms.css": "./dist/forms.css"
+  },
+  "dependencies": {
+    "@fontsource/cambo": "5.3.0",
+    "@fontsource/cinzel": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/lato": "5.3.0"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ]
+}
