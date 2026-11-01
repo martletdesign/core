@@ -12,5 +12,7 @@ test('staging proposal remains manual, inert and staged-only',async()=>{
  assert.doesNotMatch(text,/\bnpm publish\b/);
  assert.match(text,/git merge-base --is-ancestor HEAD origin\/main/);
  assert.match(text,/sha256sum --check/);
+ assert.match(text,/test \"\$GITHUB_REF\" = \"refs\/heads\/main\"/);
+ assert.match(text,/test \"\$APPROVED_SHA\" = \"\$GITHUB_SHA\"/);
  assert.match(text,/pkg\.private|v\.private/);
 });
