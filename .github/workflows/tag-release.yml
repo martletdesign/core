@@ -8,7 +8,11 @@ concurrency:
   group: core-tag-release-${{ github.repository }}
   cancel-in-progress: false
 jobs:
+  verify:
+    if: ${{ false }}
+    uses: ./.github/workflows/verify.yml
   release:
+    needs: verify
     # Separate authorization and review of controls are required to enable.
     if: ${{ false }}
     runs-on: ubuntu-latest
