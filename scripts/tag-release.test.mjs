@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
 import {releaseVersion,validateIdentity,productionCommit,registryState,verifyArchive} from './tag-release-guard.mjs';
 
 const pkg={name:'@martlet/core',version:'2.2.3',private:true,repository:{url:'git+https://github.com/martletdesign/core.git'},dependencies:{font:'1.0.0'}};
@@ -46,4 +47,9 @@ test('tag publication proposal is disabled and legacy direct publication stays d
   assert.match(draft,/npm publish[^\n]*--provenance/);
   assert.match(draft,/verify-registry/);
   assert.match(legacy,/  publish:\n(?:    #[^\n]*\n)*    if:\s*\$\{\{ false \}\}/);
+});
+
+test('recovery refuses malformed tags before contacting the registry',()=>{
+  const run=spawnSync(process.execPath,['scripts/tag-release-cli.mjs','verify-registry','missing.tgz'],{env:{...process.env,RELEASE_TAG:'x2.2.3'},encoding:'utf8'});
+  assert.notEqual(run.status,0);assert.match(run.stderr,/Invalid release tag/);
 });
