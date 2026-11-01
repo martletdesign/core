@@ -13,7 +13,7 @@ export function validateIdentity({tag,pkg,source,lock,repository,expectedReposit
   const result=releaseVersion(tag);
   if(repository!==expectedRepository || pkg.name!==expectedName || pkg.private!==true || pkg.version!==result.version || source.version!==result.version) throw Error('Release identity mismatch');
   if(pkg.repository?.url!==`git+https://github.com/${expectedRepository}.git`) throw Error('Repository metadata mismatch');
-  if(lock.name!==pkg.name || lock.version!==pkg.version || lock.packages?.['']?.name!==pkg.name || lock.packages?.['']?.version!==pkg.version || !isDeepStrictEqual(lock.packages?.['']?.dependencies??{},pkg.dependencies??{})) throw Error('Lockfile metadata mismatch');
+  if(lock.name!==pkg.name || lock.version!==pkg.version || lock.packages?.['']?.name!==pkg.name || lock.packages?.['']?.version!==pkg.version || !['dependencies','devDependencies','peerDependencies','optionalDependencies'].every(key=>isDeepStrictEqual(lock.packages?.['']?.[key]??{},pkg[key]??{}))) throw Error('Lockfile metadata mismatch');
   return result;
 }
 

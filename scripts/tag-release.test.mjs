@@ -10,6 +10,7 @@ test('tag and package source/lock identity must agree',()=>{
   assert.deepEqual(validateIdentity(input),{version:'2.2.3',channel:'latest'});
   const reordered={...pkg,dependencies:{z:'1',a:'2'}};
   assert.doesNotThrow(()=>validateIdentity({...input,pkg:reordered,lock:{...input.lock,packages:{'':{...input.lock.packages[''],dependencies:{a:'2',z:'1'}}}}}));
+  assert.throws(()=>validateIdentity({...input,pkg:{...pkg,peerDependencies:{example:'^1.0.0'}}}));
   assert.equal(releaseVersion('v2.2.4-rc.1').channel,'next');
   for(const t of ['v02.2.3','v2.2','v2.2.3-rc.01','v2.2.3+1']) assert.throws(()=>releaseVersion(t));
   for(const change of [{tag:'v2.2.4'},{repository:'other/core'},{source:{version:'2.2.4'}},{pkg:{...pkg,private:false}},{lock:{...input.lock,version:'2.2.4'}}]) assert.throws(()=>validateIdentity({...input,...change}));

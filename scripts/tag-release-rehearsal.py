@@ -26,6 +26,7 @@ export=base/'export';export.mkdir();archive=subprocess.run(['git','archive','HEA
 p=export/'package.json';d=json.loads(p.read_text());d['private']=False;p.write_text(json.dumps(d,indent=2)+'\n')
 out=base/'out';out.mkdir();result=json.loads(run(['npm','pack','--ignore-scripts','--pack-destination',str(out),'--json'],cwd=export,env=env));artifact=out/result[0]['filename']
 run(['node','scripts/tag-release-cli.mjs','inspect',str(artifact)],env=env)
+run(['npm','publish',str(artifact),'--dry-run','--ignore-scripts','--tag','next','--registry=http://127.0.0.1:9','--fetch-retries=0','--fetch-timeout=2000'],env=env)
 bad=env.copy();bad['REF_PROTECTED']='false';rejected=subprocess.run(['node','scripts/tag-release-cli.mjs','preflight'],cwd=repo,env=bad,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 if rejected.returncode==0: raise SystemExit('Unprotected tag unexpectedly accepted')
-print(json.dumps({'family':family,'preflight':'pass with simulated protection and local tag','unprotected':'rejected','build':'pass','tests':'pass','pack_inspect':'pass','production_mutations':False}))
+print(json.dumps({'family':family,'preflight':'pass with simulated protection and local tag','unprotected':'rejected','build':'pass','tests':'pass','pack_inspect':'pass','npm_publish_dry_run':'pass against unreachable local registry','production_mutations':False}))
