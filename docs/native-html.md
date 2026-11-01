@@ -1,6 +1,8 @@
 # Direct HTML anatomy
 
-Core 2.2.2 · Framework-independent classes. Import `@martlet/theme/full.css` and optional `fonts.css`, then use `class="martlet" data-martlet="light"` on your shell. A class beginning `martlet-` is namespaced; a primitive name in `layout.json` is not itself an HTML class. These contracts work in server HTML, Astro and React JSX (`className`) without reconstructing another framework's implementation.
+> Candidate imports below refer to an unpublished local `@martlet/core` tarball; published `@martlet/theme` remains available.
+
+Core 2.2.2 · Framework-independent classes. Import `@martlet/core/full.css` and optional `fonts.css`, then use `class="martlet" data-martlet="light"` on your shell. A class beginning `martlet-` is namespaced; a primitive name in `layout.json` is not itself an HTML class. These contracts work in server HTML, Astro and React JSX (`className`) without reconstructing another framework's implementation.
 
 | Object | Classes / native structure |
 | --- | --- |
