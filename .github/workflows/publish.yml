@@ -11,6 +11,9 @@ jobs:
   verify:
     uses: ./.github/workflows/verify.yml
   publish:
+    # Disabled in this proposal: direct npm publication bypasses staged review.
+    # Re-enabling requires a separately reviewed publication policy.
+    if: ${{ false }}
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 10
