@@ -19,7 +19,6 @@ test('staging workflow is manual, enabled, gated and staged-only',async()=>{
  assert.match(text,/pkg\.private|v\.private/);
 });
 
-test('legacy release events cannot run the direct-publish job',async()=>{
- const text=await readFile('.github/workflows/publish.yml','utf8');
- assert.match(text,/  publish:\n(?:    #[^\n]*\n)*    if:\s*\$\{\{ false \}\}/);
+test('legacy release-event direct publication is absent',async()=>{
+ await assert.rejects(readFile('.github/workflows/publish.yml','utf8'),{code:'ENOENT'});
 });

@@ -38,15 +38,14 @@ test('registry package identity, bytes and integrity must match',()=>{
   assert.equal(verifyArchive({local,remote:Buffer.from('different'),metadata,name:pkg.name,version:pkg.version}),false);
   assert.equal(verifyArchive({local,remote:local,metadata:{...metadata,name:'@other/core'},name:pkg.name,version:pkg.version}),false);
 });
-test('tag publication proposal is disabled and legacy direct publication stays disabled',async()=>{
+test('tag publication proposal is disabled and legacy release-event workflow is absent',async()=>{
   const draft=await readFile('.github/workflows/tag-release.yml','utf8');
-  const legacy=await readFile('.github/workflows/publish.yml','utf8');
+  await assert.rejects(readFile('.github/workflows/publish.yml','utf8'),{code:'ENOENT'});
   assert.match(draft,/push:\s*\n\s*tags:\s*\['v\*'\]/);
   assert.match(draft,/if:\s*\$\{\{ false \}\}/);
   assert.match(draft,/environment:\s*core-production-release/);
   assert.match(draft,/npm publish[^\n]*--provenance/);
   assert.match(draft,/verify-registry/);
-  assert.match(legacy,/  publish:\n(?:    #[^\n]*\n)*    if:\s*\$\{\{ false \}\}/);
 });
 
 test('recovery refuses malformed tags before contacting the registry',()=>{
