@@ -1,4 +1,4 @@
-name: Stage core publication (disabled draft)
+name: Stage core publication
 on:
   workflow_dispatch:
     inputs:
@@ -19,9 +19,7 @@ permissions:
   contents: read
 jobs:
   stage:
-    # Inert in this draft; activation, environment setup and npm trust require
-    # separate authorization. npm 2FA approval is a second, independent gate.
-    if: ${{ false }}
+    # GitHub environment approval precedes staging; npm approval is separate.
     runs-on: ubuntu-latest
     environment: core-stage-review
     permissions:
