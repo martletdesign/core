@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {appendFile,readFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
-import {identityFromFiles,productionCommit,realGit,registryState,verifyArchive,releaseVersion} from './tag-release-guard.mjs';
+import {identityFromFiles,productionCommit,realGit,registryState,verifyArchive,releaseVersion,verifyProvenance} from './tag-release-guard.mjs';
 
 const repository='martletdesign/core',name='@martlet/core',registry='https://registry.npmjs.org/';
 const tag=process.env.RELEASE_TAG;
@@ -33,6 +33,9 @@ if(command==='preflight') {
 } else if(command==='confirm-absent') {
   const state=await registryState(fetchTimed,registry,name,version);
   if(state!=='absent') throw Error(`Registry version state: ${state}`);
+} else if(command==='verify-provenance') {
+  const audit=JSON.parse(await readFile(process.argv[3],'utf8')),archive=await readFile(process.argv[4]);
+  if(!verifyProvenance({audit,archive,name,version,repository,tag,commit:process.env.GITHUB_SHA})) throw Error('Verified provenance does not match the release workflow and commit');
 } else if(command==='verify-registry') {
   const local=await readFile(process.argv[3]);
   let verified=false;

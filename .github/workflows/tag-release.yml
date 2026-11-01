@@ -52,6 +52,16 @@ jobs:
         run: npm publish "$RUNNER_TEMP/core-out/martlet-core-${{ steps.identity.outputs.version }}.tgz" --access public --tag "${{ steps.identity.outputs.channel }}" --provenance
       - name: Independently verify registry identity, integrity and bytes
         run: node scripts/tag-release-cli.mjs verify-registry "$RUNNER_TEMP/core-out/martlet-core-${{ steps.identity.outputs.version }}.tgz"
+      - name: Verify npm signatures and exact release provenance
+        env:
+          PACKAGE_NAME: ${{ steps.identity.outputs.name }}
+          PACKAGE_VERSION: ${{ steps.identity.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/provenance-consumer"
+          printf '{"name":"release-verification","version":"0.0.0","private":true}\n' > "$RUNNER_TEMP/provenance-consumer/package.json"
+          (cd "$RUNNER_TEMP/provenance-consumer" && npm install --ignore-scripts --legacy-peer-deps --no-audit --no-fund --save-exact "$PACKAGE_NAME@$PACKAGE_VERSION" && npm audit signatures --json --include-attestations > "$RUNNER_TEMP/provenance-audit.json")
+          node scripts/tag-release-cli.mjs verify-provenance "$RUNNER_TEMP/provenance-audit.json" "$RUNNER_TEMP/core-out/martlet-core-${{ steps.identity.outputs.version }}.tgz"
       - name: Recheck tag before release creation
         run: node scripts/tag-release-cli.mjs verify-tag
       - name: Create GitHub Release after registry verification

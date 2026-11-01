@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {spawnSync} from 'node:child_process';
-import {releaseVersion,validateIdentity,productionCommit,registryState,verifyArchive} from './tag-release-guard.mjs';
+import {releaseVersion,validateIdentity,productionCommit,registryState,verifyArchive,verifyProvenance} from './tag-release-guard.mjs';
 
 const pkg={name:'@martlet/core',version:'2.2.3',private:true,repository:{url:'git+https://github.com/martletdesign/core.git'},dependencies:{font:'1.0.0'}};
 const input={tag:'v2.2.3',pkg,source:{version:'2.2.3'},lock:{name:pkg.name,version:pkg.version,packages:{'':{name:pkg.name,version:pkg.version,dependencies:pkg.dependencies}}},repository:'martletdesign/core',expectedRepository:'martletdesign/core',expectedName:'@martlet/core'};
@@ -52,4 +52,19 @@ test('tag publication proposal is disabled and legacy direct publication stays d
 test('recovery refuses malformed tags before contacting the registry',()=>{
   const run=spawnSync(process.execPath,['scripts/tag-release-cli.mjs','verify-registry','missing.tgz'],{env:{...process.env,RELEASE_TAG:'x2.2.3'},encoding:'utf8'});
   assert.notEqual(run.status,0);assert.match(run.stderr,/Invalid release tag/);
+});
+
+test('verified provenance must identify the exact package, tag, workflow and commit',()=>{
+  const archive=Buffer.from('release bytes'),commit='a'.repeat(40),tag='v2.2.3',repository=input.expectedRepository;
+  const [scope,packageName]=pkg.name.split('/');
+  const statement={_type:'https://in-toto.io/Statement/v1',subject:[{name:`pkg:npm/${encodeURIComponent(scope)}/${packageName}@2.2.3`,digest:{sha512:createHash('sha512').update(archive).digest('hex')}}],predicate:{buildDefinition:{externalParameters:{workflow:{repository:`https://github.com/${repository}`,path:'.github/workflows/tag-release.yml',ref:`refs/tags/${tag}`}},internalParameters:{github:{event_name:'push'}},resolvedDependencies:[{uri:`git+https://github.com/${repository}@refs/tags/${tag}`,digest:{gitCommit:commit}}]}}};
+  const makeAudit=s=>({invalid:[],missing:[],verified:[{name:pkg.name,version:'2.2.3',attestationBundles:[{predicateType:'https://slsa.dev/provenance/v1',bundle:{dsseEnvelope:{payload:Buffer.from(JSON.stringify(s)).toString('base64')}}}]}]});
+  const args={audit:makeAudit(statement),archive,name:pkg.name,version:'2.2.3',repository,tag,commit};
+  assert.equal(verifyProvenance(args),true);
+  assert.equal(verifyProvenance({...args,commit:'b'.repeat(40)}),false);
+  assert.equal(verifyProvenance({...args,archive:Buffer.from('other')}),false);
+  assert.equal(verifyProvenance({...args,audit:{...args.audit,invalid:[{}]}}),false);
+  assert.equal(verifyProvenance({...args,audit:{invalid:[],missing:[],verified:[]}}),false);
+  statement.predicate.buildDefinition.externalParameters.workflow.path='.github/workflows/other.yml';
+  assert.equal(verifyProvenance({...args,audit:makeAudit(statement)}),false);
 });
