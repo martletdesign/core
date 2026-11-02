@@ -23,6 +23,10 @@ export function productionCommit({git,tag,sha,protectedRef}) {
   const peeled=git(['rev-parse',`refs/tags/${tag}^{commit}`]).trim();
   if(peeled!==sha || git(['rev-parse','HEAD']).trim()!==sha) throw Error('Tag, event and checkout differ');
   if(!git(['rev-list','--first-parent','refs/remotes/origin/main']).trim().split('\n').includes(sha)) throw Error('Commit is not on main first-parent history');
+  // Bind the local first-parent proof to the production branch advertised now.
+  const main=git(['rev-parse','refs/remotes/origin/main']).trim();
+  const advertisedMain=git(['ls-remote','--refs','origin','refs/heads/main']).trim().split(/\s+/);
+  if(!/^[a-f0-9]{40}$/.test(main)||advertisedMain.length!==2||advertisedMain[0]!==main||advertisedMain[1]!=='refs/heads/main')throw Error('Production main changed or is unavailable');
   const local=git(['rev-parse',`refs/tags/${tag}`]).trim();
   const remote=git(['ls-remote','--refs','origin',`refs/tags/${tag}`]).trim().split(/\s+/);
   if(remote.length!==2 || remote[0]!==local || remote[1]!==`refs/tags/${tag}`) throw Error('Tag differs from remote');

@@ -18,7 +18,7 @@ test('tag and package source/lock identity must agree',()=>{
 });
 test('tag protection, event SHA, first-parent and remote ref all gate release',()=>{
   const sha='1'.repeat(40),object='2'.repeat(40);
-  const git=args=>args[0]==='ls-remote'?`${object}\trefs/tags/v2.2.3`:args[0]==='rev-list'?`${sha}\n`:(args.at(-1).endsWith('^{commit}')||args.at(-1)==='HEAD'?sha:object);
+  const git=args=>args[0]==='ls-remote'?(args.at(-1)==='refs/heads/main'?`${object}\trefs/heads/main`:`${object}\trefs/tags/v2.2.3`):args[0]==='rev-list'?`${sha}\n`:(args.at(-1).endsWith('^{commit}')||args.at(-1)==='HEAD'?sha:object);
   productionCommit({git,tag:'v2.2.3',sha,protectedRef:'true'});
   assert.throws(()=>productionCommit({git,tag:'v2.2.3',sha,protectedRef:'false'}));
   assert.throws(()=>productionCommit({git,tag:'v2.2.3',sha:'3'.repeat(40),protectedRef:'true'}));
@@ -75,4 +75,15 @@ test('verified provenance must identify the exact package, tag, workflow and com
   assert.equal(verifyProvenance({...args,audit:makeAudit(altered)}),false);
   statement.predicate.buildDefinition.externalParameters.workflow.path='.github/workflows/other.yml';
   assert.equal(verifyProvenance({...args,audit:makeAudit(statement)}),false);
+});
+
+
+test('release refuses a stale or unavailable live production branch',()=>{
+  const sha='1'.repeat(40),main='2'.repeat(40),tag='v1.2.3';
+  const git=a=>a[0]==='ls-remote'?`${main}\t${a.at(-1)}`:a[0]==='rev-list'?sha:(a.at(-1).endsWith('^{commit}')||a.at(-1)==='HEAD'?sha:main);
+  const input={git,tag,sha,protectedRef:'true'};
+  productionCommit(input);
+  for(const advertised of ['',`${'3'.repeat(40)}\trefs/heads/main`,`${main}\trefs/heads/other`,`${main}\trefs/heads/main\n${main}\trefs/heads/main`]){
+    assert.throws(()=>productionCommit({...input,git:a=>a[0]==='ls-remote'&&a.at(-1)==='refs/heads/main'?advertised:git(a)}),/Production main/);
+  }
 });
