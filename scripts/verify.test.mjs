@@ -13,6 +13,27 @@ if(kind==='npm'){
   assert.deepEqual(esm.themes,themes);assert.deepEqual(cjs.themes,themes);
   assert.equal(esm.dark.tokens.accent,themes.dark.tokens.accent);
  });
+ test('design declarations cover every exported string-token group',async()=>{
+  const esm=await import('../dist/index.js');
+  const declarations=await readFile('dist/index.d.ts','utf8');
+  const designType=declarations.match(/export declare const design: \{([^}]+)\}/)?.[1];
+  assert.ok(designType);
+  const declared=[...designType.matchAll(/readonly "([^"]+)": Readonly<Record<string,string>>;/g)].map(match=>match[1]);
+  assert.deepEqual(declared,Object.keys(esm.design));
+  for(const group of Object.values(esm.design)) assert.ok(Object.values(group).every(value=>typeof value==='string'));
+ });
+ test('foundation declarations expose the shipped provenance fields',async()=>{
+  const esm=await import('../dist/index.js');
+  const declarations=await readFile('dist/index.d.ts','utf8');
+  const foundationType=declarations.match(/export declare const foundation: \{([^}]+)\}/)?.[1];
+  assert.ok(foundationType);
+  const declared=[...foundationType.matchAll(/readonly (\w+):/g)].map(match=>match[1]);
+  assert.deepEqual(declared.sort(),Object.keys(esm.foundation).sort());
+  assert.equal(typeof esm.foundation.sourceRepository,'string');
+  assert.equal(typeof esm.foundation.sourceCommit,'string');
+  if ('sourceFiles' in esm.foundation) assert.ok(esm.foundation.sourceFiles.every(value=>typeof value==='string'));
+  if ('normalization' in esm.foundation) assert.ok(Object.values(esm.foundation.normalization).every(value=>typeof value==='string'));
+ });
  test('package exports resolve and CSS preserves scoped roles',async()=>{
   const pkg=JSON.parse(await readFile('package.json','utf8'));
   for(const value of Object.values(pkg.exports)) for(const path of typeof value==='string'?[value]:Object.values(value)) assert.ok((await readFile(path)).length);
