@@ -41,13 +41,15 @@ test('registry package identity, bytes and integrity must match',()=>{
   assert.equal(verifyArchive({local,remote:Buffer.from('different'),metadata,name:pkg.name,version:pkg.version}),false);
   assert.equal(verifyArchive({local,remote:local,metadata:{...metadata,name:'@other/core'},name:pkg.name,version:pkg.version}),false);
 });
-test('tag publication proposal is disabled and legacy release-event workflow is absent',async()=>{
+test('tag release completes an existing verified publication without npm write permission',async()=>{
   const draft=await readFile('.github/workflows/tag-release.yml','utf8');
   await assert.rejects(readFile('.github/workflows/publish.yml','utf8'),{code:'ENOENT'});
   assert.match(draft,/push:\s*\n\s*tags:\s*\['v\*'\]/);
-  assert.match(draft,/if:\s*\$\{\{ false \}\}/);
-  assert.match(draft,/environment:\s*core-production-release/);
-  assert.match(draft,/npm publish[^\n]*--provenance/);
+  assert.doesNotMatch(draft,/npm (?:stage )?publish|id-token:|core-production-release|RELEASE_ENVIRONMENT_READY/);
+  assert.match(draft,/completion-preflight/);
+  assert.match(draft,/verify-stage-provenance/);
+  assert.match(draft,/SHA256SUMS/);
+  assert.match(draft,/timeout-minutes:\s*15/);
   assert.match(draft,/verify-registry/);
 });
 
@@ -63,6 +65,13 @@ test('verified provenance must identify the exact package, tag, workflow and com
   const makeAudit=s=>({invalid:[],missing:[],verified:[{name:pkg.name,version:'2.2.3',attestationBundles:[{predicateType:'https://slsa.dev/provenance/v1',bundle:{dsseEnvelope:{payload:Buffer.from(JSON.stringify(s)).toString('base64')}}}]}]});
   const args={audit:makeAudit(statement),archive,name:pkg.name,version:'2.2.3',repository,tag,commit};
   assert.equal(verifyProvenance(args),true);
+  const stage=structuredClone(statement),definition=stage.predicate.buildDefinition;
+  definition.externalParameters.workflow={repository:`https://github.com/${repository}`,path:'.github/workflows/core-stage.yml',ref:'refs/heads/main'};
+  definition.internalParameters.github.event_name='workflow_dispatch';
+  definition.resolvedDependencies=[{uri:`git+https://github.com/${repository}@refs/heads/main`,digest:{gitCommit:commit}}];
+  const staged={...args,audit:makeAudit(stage),expectedWorkflow:'.github/workflows/core-stage.yml',expectedRef:'refs/heads/main',expectedEvent:'workflow_dispatch'};
+  assert.equal(verifyProvenance(staged),true);
+  for(const change of [{commit:'c'.repeat(40)},{expectedRef:'refs/heads/develop'},{expectedEvent:'push'},{expectedWorkflow:'.github/workflows/tag-release.yml'}])assert.equal(verifyProvenance({...staged,...change}),false);
   assert.equal(verifyProvenance({...args,commit:'b'.repeat(40)}),false);
   assert.equal(verifyProvenance({...args,archive:Buffer.from('other')}),false);
   assert.equal(verifyProvenance({...args,audit:{...args.audit,invalid:[{}]}}),false);

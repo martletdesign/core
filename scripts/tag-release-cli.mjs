@@ -11,12 +11,11 @@ const fetchTimed=url=>fetch(url,{signal:AbortSignal.timeout(15000),redirect:'err
 const packageURL=new URL(encodeURIComponent(name),registry).href;
 const versionURL=`${packageURL}/${encodeURIComponent(version??'')}`;
 
-if(command==='preflight') {
-  if(process.env.RELEASE_ENVIRONMENT_READY!=='yes') throw Error('Protected release environment sentinel missing');
+if(command==='completion-preflight') {
   const info=await identityFromFiles({tag,repository:process.env.GITHUB_REPOSITORY,expectedRepository:repository,expectedName:name});
   productionCommit({git:realGit,tag,sha:process.env.GITHUB_SHA,protectedRef:process.env.REF_PROTECTED});
   const state=await registryState(fetchTimed,registry,name,info.version);
-  if(state!=='absent') throw Error(`Registry version state: ${state}`);
+  if(state!=='present') throw Error(`Published registry version required; state: ${state}`);
   await appendFile(process.env.GITHUB_OUTPUT,`name=${name}\nversion=${info.version}\nchannel=${info.channel}\n`);
 } else if(command==='verify-tag') {
   await identityFromFiles({tag,repository:process.env.GITHUB_REPOSITORY,expectedRepository:repository,expectedName:name});
@@ -33,9 +32,10 @@ if(command==='preflight') {
 } else if(command==='confirm-absent') {
   const state=await registryState(fetchTimed,registry,name,version);
   if(state!=='absent') throw Error(`Registry version state: ${state}`);
-} else if(command==='verify-provenance') {
+} else if(command==='verify-provenance'||command==='verify-stage-provenance') {
   const audit=JSON.parse(await readFile(process.argv[3],'utf8')),archive=await readFile(process.argv[4]);
-  if(!verifyProvenance({audit,archive,name,version,repository,tag,commit:process.env.GITHUB_SHA})) throw Error('Verified provenance does not match the release workflow and commit');
+  const expected=command==='verify-stage-provenance'?{expectedWorkflow:'.github/workflows/core-stage.yml',expectedRef:'refs/heads/main',expectedEvent:'workflow_dispatch'}:{};
+  if(!verifyProvenance({audit,archive,name,version,repository,tag,commit:process.env.GITHUB_SHA,...expected})) throw Error('Verified provenance does not match the publication workflow and commit');
 } else if(command==='verify-registry') {
   const local=await readFile(process.argv[3]);
   let verified=false;
