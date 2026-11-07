@@ -7,6 +7,7 @@
 .martlet :where(:focus-visible) { outline: var(--martlet-focus-width) solid var(--martlet-focus-ring); outline-offset: var(--martlet-focus-gap); }
 .martlet :where(pre) { max-inline-size: 100%; overflow: auto; padding: var(--martlet-space-4); border-radius: var(--martlet-radius-md); color: var(--martlet-code-text); background: var(--martlet-code-bg); }
 .martlet :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]),select,textarea) { max-inline-size: 100%; min-inline-size: 0; min-block-size: var(--martlet-control-height); padding: var(--martlet-control-padding); border: var(--martlet-border-width) solid var(--martlet-input-border); border-radius: var(--martlet-radius-sm); color: var(--martlet-input-text); background: var(--martlet-input-bg); }
+.martlet :where(input,textarea)::placeholder { color: var(--martlet-input-placeholder); opacity: 1; }
 .martlet :where(button) { cursor: pointer; }
 .martlet :where(button:disabled) { cursor: not-allowed; }
 .martlet ::selection { color: var(--martlet-selection-text); background: var(--martlet-selection); }
