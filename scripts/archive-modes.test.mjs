@@ -23,7 +23,7 @@ test('stage extraction preserves Git modes and identical package bytes under res
    assert.equal(extracted.status,0,extracted.stderr);
    assert.equal((await stat(join(target,'source.txt'))).mode&0o777,0o644);assert.equal((await stat(join(target,'run.mjs'))).mode&0o777,0o755);
    assert.equal(await readFile(join(target,'source.txt'),'utf8'),'Canonical file bytes\n');
-   const packed=spawnSync('npm',['pack','--ignore-scripts','--json','--pack-destination',output],{cwd:target,encoding:'utf8',timeout:30000});
+   const packed=spawnSync('npm',['pack','--dry-run=false','--ignore-scripts','--json','--pack-destination',output],{cwd:target,encoding:'utf8',timeout:30000});
    assert.equal(packed.status,0,packed.stderr);packages.push(await readFile(join(output,JSON.parse(packed.stdout)[0].filename)));
   }
   assert.deepEqual(packages[0],packages[1]);
