@@ -19,7 +19,7 @@
   },
   "implementation": {
     "core": {
-      "version": "2.2.3",
+      "version": "2.2.4",
       "status": "experimental",
       "sourceProfile": "opt-in; existing defaults retained"
     },
