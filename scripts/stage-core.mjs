@@ -20,6 +20,9 @@ export function archiveDigest(bytes,expected) {
   const digest=createHash('sha256').update(bytes).digest('hex');
   assert.equal(digest,expected,'Archive differs from accepted release artifact'); return digest;
 }
+export function extractSource(source,directory) {
+  execFileSync('tar',['--same-permissions','-x','-C',directory],{input:source,timeout:30000});
+}
 async function preflight() {
   const pkg=JSON.parse(await readFile('package.json','utf8'));
   await identityFromFiles({tag:`v${pkg.version}`,repository:process.env.GITHUB_REPOSITORY,expectedRepository:repository,expectedName:name});
@@ -38,7 +41,7 @@ async function main() {
   let first;
   for(const suffix of ['one','two']) {
     const dir=join(temp,`core-src-${suffix}`);await mkdir(dir);
-    execFileSync('tar',['-x','-C',dir],{input:source,timeout:30000});
+    extractSource(source,dir);
     const file=join(dir,'package.json'),manifest=JSON.parse(await readFile(file,'utf8'));
     assert.deepEqual(manifest,pkg);manifest.private=false;await writeFile(file,JSON.stringify(manifest,null,2)+'\n');
     const packed=JSON.parse(execFileSync('npm',['pack','--ignore-scripts','--json','--pack-destination',output],{cwd:dir,encoding:'utf8',timeout:60000,maxBuffer:1024*1024}));
