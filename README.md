@@ -1,6 +1,6 @@
 # Martlet core
 
-> **Unpublished migration candidate:** `@martlet/core` is a proposed new package identity, not an announced registry release. Install the local tarball to test it. Existing `@martlet/theme` installations remain the supported published path until a separately approved release and migration. This review branch is marked private to prevent publication.
+> **Published Core:** `@martlet/core@2.2.3` is independently installable from npm. This source prepares compatible 2.2.4, with complete TypeScript declarations for existing runtime exports. Existing `@martlet/theme` versions remain available; see [migration and compatibility](docs/core-migration.md). Source stays `private: true`; the staged publisher verifies an isolated publishable archive.
 
 `@martlet/core` is the framework-independent source of truth for Martlet. It contains Light/Dark semantic colors and the typography, spacing, shape, depth, and interaction definitions extracted from jameshoward.us.
 
@@ -45,9 +45,9 @@ Edit `source.json` here; run `npm ci --ignore-scripts`, `npm run build`, `npm te
 
 The `capabilities` export records what each integration applies, requires separate configuration for, or cannot support. A browser color theme does not change fonts. Editors and terminals use the monospace role only where their host allows it.
 
-The npm scope is `martlet`. To test this candidate, run `npm pack` and install the resulting local tarball. Published consumers continue to use `@martlet/theme`. Package versions are independent of application-port versions.
+Install the published package with `npm install @martlet/core@2.2.3`. Test the next source patch with `npm pack` and a local consumer. Package versions are independent of application-port versions. Legacy `@martlet/theme` imports remain available and are not redirected automatically.
 
-Application port generators in `martletdesign/martlettheme` currently consume `@martlet/theme`. Their migration requires a separate reviewed change. Ordinary verification does not publish; publishing a GitHub release triggers the release workflow.
+Application-port generators and framework consumers migrate their dependency and imports explicitly; a Core installation does not satisfy an existing `@martlet/theme` peer dependency. Ordinary verification does not publish. Publication uses `core-stage.yml` and npm owner approval; tag completion verifies the already published package and creates its GitHub source release without npm write permission.
 
 ## Layouts
 
@@ -55,7 +55,7 @@ Version 2.1 adds optional [`layout.css`](docs/layout.md), the `layout` JavaScrip
 
 ## Releases
 
-The current GitHub release workflow can publish automatically through npm trusted publishing; this private candidate cannot be published. See [release setup](docs/releasing.md) for the one-time package authorization and release order.
+The source private guard prevents ordinary publication. The protected manual publisher transforms only the isolated archive manifest, verifies its accepted digest, and stages through npm trusted publishing. See [release setup](docs/releasing.md).
 
 ## Foundations specification
 
