@@ -83,6 +83,10 @@ test('workflow wiring preserves trusted identity, stage default and separate lea
  assert.match(watcher,/workflow_run:/);assert.ok(watcher.includes("workflows: ['"+config.workflow+"']"));
  for(const term of ["conclusion == 'success'","event == 'push'","head_branch == 'main'","head_repository.full_name == github.repository",'github.event.workflow_run.head_sha','actions: write'])assert.ok(watcher.includes(term),term);
  assert.doesNotMatch(watcher,/id-token:|download-artifact|npm (?:stage )?publish/);
+ const group=watcher.match(/\n  group: ([^\n]+)/)?.[1];assert.ok(group);
+ const key=event=>group.replace(/\$\{\{\s*github\.repository\s*\}\}/g,config.repository).replace(/\$\{\{\s*github\.event\.workflow_run\.event\s*\}\}/g,event);
+ assert.notEqual(key('push'),key('pull_request'),'A skipped PR verification must not cancel a genuine push watcher');
+ assert.match(watcher,/cancel-in-progress: true/,'Read-only push watchers cancel superseded pushes');
  assert.match(publisher,/default: stage/);assert.match(publisher,/environment: core-stage-review/);
  assert.equal((publisher.match(/stage-core\.mjs preflight/g)??[]).length,2);
  const [stage,complete]=publisher.split('\n  complete:\n');
