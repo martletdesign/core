@@ -84,8 +84,11 @@ test('workflow wiring preserves trusted identity, stage default and separate lea
  for(const term of ["conclusion == 'success'","event == 'push'","head_branch == 'main'","head_repository.full_name == github.repository",'github.event.workflow_run.head_sha','actions: write'])assert.ok(watcher.includes(term),term);
  assert.doesNotMatch(watcher,/id-token:|download-artifact|npm (?:stage )?publish/);
  const group=watcher.match(/\n  group: ([^\n]+)/)?.[1];assert.ok(group);
- const key=event=>group.replace(/\$\{\{\s*github\.repository\s*\}\}/g,config.repository).replace(/\$\{\{\s*github\.event\.workflow_run\.event\s*\}\}/g,event);
+ const key=(event,branch='main',conclusion='success')=>group.replace(/\$\{\{\s*github\.repository\s*\}\}/g,config.repository).replace(/\$\{\{\s*github\.event\.workflow_run\.event\s*\}\}/g,event).replace(/\$\{\{\s*github\.event\.workflow_run\.head_branch\s*\}\}/g,branch).replace(/\$\{\{\s*github\.event\.workflow_run\.conclusion\s*\}\}/g,conclusion);
  assert.notEqual(key('push'),key('pull_request'),'A skipped PR verification must not cancel a genuine push watcher');
+ assert.notEqual(key('push'),key('push','develop'),'A non-main result must not cancel a main watcher');
+ for(const conclusion of ['failure','cancelled','timed_out'])assert.notEqual(key('push'),key('push','main',conclusion),'A skipped '+conclusion+' result must not cancel a successful push watcher');
+ assert.doesNotMatch(group,/head_sha/,'Successful main pushes share a group across superseded commits');
  assert.match(watcher,/cancel-in-progress: true/,'Read-only push watchers cancel superseded pushes');
  assert.match(publisher,/default: stage/);assert.match(publisher,/environment: core-stage-review/);
  assert.equal((publisher.match(/stage-core\.mjs preflight/g)??[]).length,2);
