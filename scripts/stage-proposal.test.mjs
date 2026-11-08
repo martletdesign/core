@@ -18,14 +18,15 @@ test('staged archive must match the exact supplied digest',()=>{
  for(const digest of ['',hash.toUpperCase(),'a'.repeat(64)])assert.throws(()=>archiveDigest(bytes,digest));
  assert.throws(()=>archiveDigest(Buffer.from('changed package'),hash));
 });
-test('existing manual publisher remains bounded, restricted and staged-only',async()=>{
+test('existing trusted publisher keeps stage as default and exposes explicit direct publication',async()=>{
  const text=await readFile('.github/workflows/core-stage.yml','utf8');
  assert.match(text,/\non:\n  workflow_dispatch:\n/);
  assert.doesNotMatch(text,/^  (push|pull_request|release|schedule|workflow_call):/m);
  assert.match(text,/environment:\s*core-stage-review/);
  assert.match(text,/timeout-minutes:\s*15/);
  assert.match(text,/id-token:\s*write/);
- assert.match(text,/npm stage publish/);assert.doesNotMatch(text,/\bnpm publish\b/);
+ assert.match(text,/default: stage/);assert.match(text,/options: \[stage, publish\]/);
+ assert.match(text,/npm stage publish/);assert.match(text,/npm publish "\$ARCHIVE".*--provenance/);
  assert.match(text,/stage-core\.mjs prepare/);
  assert.equal((text.match(/stage-core\.mjs preflight/g)??[]).length,2);
  assert.doesNotMatch(text,/2\.2\.3|1395eb206/);
