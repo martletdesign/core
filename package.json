@@ -52,7 +52,8 @@
     "./patterns.css": "./dist/patterns.css",
     "./source-profile.css": "./dist/source-profile.css",
     "./language.json": "./dist/language.json",
-    "./forms.css": "./dist/forms.css"
+    "./forms.css": "./dist/forms.css",
+    "./site.css": "./dist/site.css"
   },
   "publishConfig": {
     "access": "public"
