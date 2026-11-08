@@ -6,8 +6,8 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: core-auto-publication-${{ github.repository }}
-  cancel-in-progress: false
+  group: core-auto-publication-${{ github.repository }}-${{ github.event.workflow_run.event }}
+  cancel-in-progress: true
 jobs:
   dispatch:
     if: >-
