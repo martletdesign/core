@@ -106,7 +106,6 @@ jobs:
       APPROVED_SHA: ${{ inputs.source_commit }}
       EXPECTED_SHA256: ${{ inputs.artifact_sha256 }}
       RELEASE_TAG: v${{ needs.stage.outputs.version }}
-      ARCHIVE: ${{ runner.temp }}/core-publication/martlet-core-${{ needs.stage.outputs.version }}.tgz
       PACKAGE_NAME: ${{ needs.stage.outputs.name }}
       PACKAGE_VERSION: ${{ needs.stage.outputs.version }}
     steps:
@@ -127,6 +126,7 @@ jobs:
       - name: Verify actual registry bytes, signatures and exact trusted-publisher provenance
         run: |
           set -euo pipefail
+          ARCHIVE="$RUNNER_TEMP/core-publication/martlet-core-$PACKAGE_VERSION.tgz"
           node scripts/tag-release-cli.mjs verify-registry "$ARCHIVE"
           mkdir "$RUNNER_TEMP/core-publication-consumer"
           printf '{"name":"publication-verification","version":"0.0.0","private":true}\n' > "$RUNNER_TEMP/core-publication-consumer/package.json"
@@ -135,4 +135,4 @@ jobs:
       - name: Create the exact immutable tag and dispatch existing source-release completion
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node scripts/auto-publish-core.mjs complete "$ARCHIVE"
+        run: node scripts/auto-publish-core.mjs complete "$RUNNER_TEMP/core-publication/martlet-core-$PACKAGE_VERSION.tgz"

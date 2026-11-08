@@ -88,6 +88,8 @@ test('workflow wiring preserves trusted identity, stage default and separate lea
  const [stage,complete]=publisher.split('\n  complete:\n');
  assert.match(stage,/id-token: write/);assert.doesNotMatch(stage,/contents: write|actions: write/);
  assert.match(complete,/contents: write/);assert.match(complete,/actions: write/);assert.doesNotMatch(complete,/id-token:/);
+ const jobEnvironment=complete.slice(complete.indexOf('\n    env:'),complete.indexOf('\n    steps:'));
+ assert.doesNotMatch(jobEnvironment,/\$\{\{\s*runner\./,'runner context is unavailable in a job-level env');
  assert.match(complete,/verify-registry/);assert.match(complete,/verify-stage-provenance/);
  assert.match(release,/workflow_dispatch:/);assert.match(release,/tags: \['v\*'\]/);assert.doesNotMatch(release,/npm (?:stage )?publish/);
 });
