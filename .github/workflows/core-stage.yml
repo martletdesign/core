@@ -2,6 +2,12 @@ name: Stage core publication
 on:
   workflow_dispatch:
     inputs:
+      publish_mode:
+        description: Stage for separate approval, or publish directly through the trusted publisher
+        required: true
+        default: stage
+        type: choice
+        options: [stage, publish]
       source_commit:
         description: Full accepted main commit SHA
         required: true
@@ -22,13 +28,17 @@ concurrency:
   cancel-in-progress: false
 jobs:
   stage:
-    # Restricted environment and npm owner approval remain publication boundaries.
+    # Preserve the registered trusted-publisher workflow and environment identity.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: core-stage-review
     permissions:
       contents: read
       id-token: write
+    outputs:
+      name: ${{ steps.archive.outputs.name }}
+      version: ${{ steps.archive.outputs.version }}
+      published: ${{ steps.publication.outputs.published }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -55,10 +65,74 @@ jobs:
         env:
           APPROVED_SHA: ${{ inputs.source_commit }}
         run: node scripts/stage-core.mjs preflight
-      - name: Stage accepted archive for separate npm 2FA approval
+      - name: Reject a conflicting release tag before direct publication
+        if: inputs.publish_mode == 'publish'
+        env:
+          APPROVED_SHA: ${{ inputs.source_commit }}
+        run: node scripts/auto-publish-core.mjs guard-tag
+      - name: Publish or stage the exact accepted archive
+        id: publication
         env:
           NPM_TAG: ${{ inputs.distribution_tag }}
           ARCHIVE: ${{ steps.archive.outputs.archive }}
+          PUBLISH_MODE: ${{ inputs.publish_mode || 'stage' }}
         run: |
+          set -euo pipefail
           [[ "$NPM_TAG" = next || "$NPM_TAG" = latest ]]
-          npm stage publish "$ARCHIVE" --access public --tag "$NPM_TAG" --provenance
+          case "$PUBLISH_MODE" in
+            stage) npm stage publish "$ARCHIVE" --access public --tag "$NPM_TAG" --provenance ;;
+            publish)
+              npm publish "$ARCHIVE" --access public --tag "$NPM_TAG" --provenance
+              echo "published=true" >> "$GITHUB_OUTPUT"
+              ;;
+            *) echo "Unknown publication mode" >&2; exit 1 ;;
+          esac
+      - uses: actions/upload-artifact@v4
+        if: inputs.publish_mode == 'publish'
+        with:
+          name: core-published-${{ github.run_id }}
+          path: ${{ steps.archive.outputs.archive }}
+          if-no-files-found: error
+          retention-days: 3
+  complete:
+    needs: stage
+    if: inputs.publish_mode == 'publish' && needs.stage.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: write
+    env:
+      APPROVED_SHA: ${{ inputs.source_commit }}
+      EXPECTED_SHA256: ${{ inputs.artifact_sha256 }}
+      RELEASE_TAG: v${{ needs.stage.outputs.version }}
+      ARCHIVE: ${{ runner.temp }}/core-publication/martlet-core-${{ needs.stage.outputs.version }}.tgz
+      PACKAGE_NAME: ${{ needs.stage.outputs.name }}
+      PACKAGE_VERSION: ${{ needs.stage.outputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.source_commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.15.0 --ignore-scripts
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-published-${{ github.run_id }}
+          path: ${{ runner.temp }}/core-publication
+      - name: Verify actual registry bytes, signatures and exact trusted-publisher provenance
+        run: |
+          set -euo pipefail
+          node scripts/tag-release-cli.mjs verify-registry "$ARCHIVE"
+          mkdir "$RUNNER_TEMP/core-publication-consumer"
+          printf '{"name":"publication-verification","version":"0.0.0","private":true}\n' > "$RUNNER_TEMP/core-publication-consumer/package.json"
+          (cd "$RUNNER_TEMP/core-publication-consumer" && npm install --ignore-scripts --no-audit --no-fund --save-exact "$PACKAGE_NAME@$PACKAGE_VERSION" && npm audit signatures --json --include-attestations > "$RUNNER_TEMP/core-publication-audit.json")
+          node scripts/tag-release-cli.mjs verify-stage-provenance "$RUNNER_TEMP/core-publication-audit.json" "$ARCHIVE"
+      - name: Create the exact immutable tag and dispatch existing source-release completion
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/auto-publish-core.mjs complete "$ARCHIVE"

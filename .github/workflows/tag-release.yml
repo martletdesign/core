@@ -1,5 +1,6 @@
 name: Complete published Core source release
 on:
+  workflow_dispatch:
   push:
     tags: ['v*']
 permissions:
