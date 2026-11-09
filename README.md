@@ -75,4 +75,4 @@ The existing `@martlet/theme@next` is the experimental 2.2.2 line; `latest` rema
 
 ### React presentation
 
-`react.css` adds the React component anatomy to the existing native Core styles. `react-reference.css` supplies the optional reference application layouts and the hydration-root bridge. Both are authored here; React repositories only import or copy these exports. The shared `reference.css` remains identical for Astro, Jekyll, and React.
+`react.css` adds the React component anatomy to the existing native Core styles. `react-reference.css` supplies the optional reference application layouts and the hydration-root bridge. Both are authored here; React repositories only import or copy these exports. The shared `martlet.css` remains identical for Astro, Jekyll, and React.

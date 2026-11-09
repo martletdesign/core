@@ -54,7 +54,7 @@
     "./language.json": "./dist/language.json",
     "./forms.css": "./dist/forms.css",
     "./site.css": "./dist/site.css",
-    "./reference.css": "./dist/reference.css",
+    "./martlet.css": "./dist/martlet.css",
     "./reference-fonts.css": "./dist/reference-fonts.css",
     "./reference-shell.css": "./dist/reference-shell.css",
     "./dashboards.css": "./dist/dashboards.css",
