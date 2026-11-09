@@ -65,11 +65,10 @@ body { margin:0; }
 .dash-chart-threshold-label { fill:var(--dash-warning); font:13px var(--dash-ui-font); }
 .dash-app .example-table-scroll table { width:100%; }
 .dash-app .dash-sort { margin:0; }
-.dash-app .example-pagination { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; }
 .dash-app .dash-panel > h2 { margin-top:0; }
 
 body.martlet.dashboard-page:has(.site-header[data-navigation-ready]:not(.is-reflowing)) { --dashboard-header-offset:calc(4.6rem + 1px); }
 .source-shell--dashboard > .site-header[data-navigation-ready]:not(.is-reflowing) + main { padding-top:calc(4.6rem + 1px); }
 .martlet .source-shell .editorial-content > :first-child { margin-block-start:0; }
 
-.dash-control-group label:not(.example-checkbox) { display:flex !important; flex-direction:column; align-items:stretch; gap:.5rem; margin:0 !important; }
+.dash-control-group label:has(> :is(input,select)):not(.example-checkbox) { display:flex !important; flex-direction:column; align-items:stretch; gap:.5rem; margin:0 !important; }
