@@ -1,6 +1,6 @@
 # Shared reference styles
 
-`@martlet/core/reference.css` is the complete external reference stylesheet. Astro and Jekyll must consume identical bytes. `reference-fonts.css` uses the existing local font URLs; `reference-shell.css` preserves the captured shell for archive provenance and is already included in reference.css.
+`@martlet/core/martlet.css` is the complete external reference stylesheet. Astro and Jekyll must consume identical bytes. `reference-fonts.css` uses the existing local font URLs; `reference-shell.css` preserves the captured shell for archive provenance and is already included in martlet.css.
 
 Core owns every selector, palette, control role, layout measure, and example composition. Edit `styles/reference/`, `styles/dashboards.css`, or `styles/dashboard-controls.css` here, build and publish Core, then synchronize both consumers. The consumers contain generated CSS assets and a package-version/hash manifest; they must not edit those assets or add stylesheets, style elements, style attributes, or JavaScript CSS mutations.
 
