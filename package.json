@@ -57,7 +57,9 @@
     "./reference.css": "./dist/reference.css",
     "./reference-fonts.css": "./dist/reference-fonts.css",
     "./reference-shell.css": "./dist/reference-shell.css",
-    "./dashboards.css": "./dist/dashboards.css"
+    "./dashboards.css": "./dist/dashboards.css",
+    "./react.css": "./dist/react.css",
+    "./react-reference.css": "./dist/react-reference.css"
   },
   "publishConfig": {
     "access": "public"
