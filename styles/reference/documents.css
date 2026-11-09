@@ -196,10 +196,10 @@ body.has-panoramic-hero .page-intro--illustrated::before {
 @media (min-width:48.01rem) {
   /* Preserve the complete natural panorama on wide screens. Shorter desktop
      frames expand only when needed to accommodate editorial copy. */
-  body.martlet[data-hero-variant="signature"] .page-intro--signature {
+  body.martlet:is([data-hero-variant="signature"],.hero-context--signature) .page-intro--signature {
     min-height:33.333333vw;
   }
-  body.martlet[data-hero-variant="signature"] .page-intro--signature .page-intro__art {
+  body.martlet:is([data-hero-variant="signature"],.hero-context--signature) .page-intro--signature .page-intro__art {
     position:absolute;
     inset:0;
     z-index:0;
@@ -282,7 +282,7 @@ html[data-appearance] body.martlet.has-panoramic-hero .site-header:not(.is-scrol
 /* Keep the approved signature photo/tint and overlap geometry. Only the narrow
    navigation layer gains a translucent warm scrim where measured AA failed. */
 @media(max-width:68rem),(max-aspect-ratio:4/5) {
-  body[data-hero-variant="signature"] .site-header:not(.is-scrolled):not(.is-menu-open)::before {
+  body:is([data-hero-variant="signature"],.hero-context--signature) .site-header:not(.is-scrolled):not(.is-menu-open)::before {
     content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(180deg,rgb(31 20 11 / .9),rgb(31 20 11 / .72));
   }
@@ -292,7 +292,7 @@ html[data-appearance] body.martlet.has-panoramic-hero .site-header:not(.is-scrol
 html[data-appearance="dark"] body.martlet .editorial-content thead th { color:var(--color-navy-900,#0b1c33); }
 @media(forced-colors:active) {
   html[data-appearance] body.martlet .site-header.mast,html[data-appearance] body.martlet .site-header.mast nav { background:Canvas !important; }
-  body[data-hero-variant="signature"] .site-header::before { display:none; }
+  body:is([data-hero-variant="signature"],.hero-context--signature) .site-header::before { display:none; }
 }
 
 /* Martlet reference dark mode: use the same opaque burnished bronze as the
@@ -377,7 +377,7 @@ html[data-appearance] body.martlet:not(.has-panoramic-hero) .site-header:not(.is
    exposing a flat brown band between the photograph and the image credit.
    Fill the existing frame instead; keep the full image-above-copy mobile mode. */
 @media (min-width:48.01rem) and (min-aspect-ratio:4/5) {
-  body.martlet[data-hero-variant="section"] .page-intro--section .page-intro__art {
+  body.martlet:is([data-hero-variant="section"],.hero-context--section) .page-intro--section .page-intro__art {
     position:absolute;
     inset:0;
     width:100%;
@@ -390,7 +390,7 @@ html[data-appearance] body.martlet:not(.has-panoramic-hero) .site-header:not(.is
   /* Apply the navigation's warm legibility treatment to the *hero* image,
      feathering to transparency well below the bar. The navbar itself stays
      transparent at the origin and is never a hard-edged opaque rectangle. */
-  body.martlet[data-hero-variant="section"] .page-intro--section::after {
+  body.martlet:is([data-hero-variant="section"],.hero-context--section) .page-intro--section::after {
     content:"";
     position:absolute;
     inset:0 0 auto;
@@ -406,7 +406,7 @@ html[data-appearance] body.martlet:not(.has-panoramic-hero) .site-header:not(.is
 /* The section header may be transparent only while it overlays its image.
    Enlarged, in-flow navigation must retain the opaque bronze behind cream
    controls, even before the user scrolls or opens the mobile menu. */
-html[data-appearance] body.martlet[data-hero-variant="section"]
+html[data-appearance] body.martlet:is([data-hero-variant="section"],.hero-context--section)
   .site-header[data-navigation-ready]:not(.is-scrolled):not(.is-menu-open):not(.is-reflowing) {
   background-color:transparent;
   background-image:none;
@@ -416,19 +416,19 @@ html[data-appearance] body.martlet[data-hero-variant="section"]
 /* examples-family.css otherwise suppresses header background transitions.
    Restore the actual fade into burnished brown when the section nav scrolls
    or opens, without changing the source's behavior on plain or home pages. */
-html[data-appearance] body.martlet[data-hero-variant="section"] .site-header.is-ready {
+html[data-appearance] body.martlet:is([data-hero-variant="section"],.hero-context--section) .site-header.is-ready {
   transition-property:background-color,border-color,box-shadow;
   transition-duration:.42s;
   transition-timing-function:ease;
 }
 @media(prefers-reduced-motion:reduce) {
-  html[data-appearance] body.martlet[data-hero-variant="section"] .site-header.is-ready {
+  html[data-appearance] body.martlet:is([data-hero-variant="section"],.hero-context--section) .site-header.is-ready {
     transition-duration:0s;
   }
 }
 @media (forced-colors:active) {
-  body.martlet[data-hero-variant="section"] .page-intro--section::after {display:none;}
-  html[data-appearance] body.martlet[data-hero-variant="section"]
+  body.martlet:is([data-hero-variant="section"],.hero-context--section) .page-intro--section::after {display:none;}
+  html[data-appearance] body.martlet:is([data-hero-variant="section"],.hero-context--section)
     .site-header[data-navigation-ready]:not(.is-scrolled):not(.is-menu-open) {
     background-image:none;
     background-color:Canvas !important;
@@ -436,7 +436,7 @@ html[data-appearance] body.martlet[data-hero-variant="section"] .site-header.is-
   }
 }
 @media print {
-  body.martlet[data-hero-variant="section"] .page-intro--section::after {display:none;}
+  body.martlet:is([data-hero-variant="section"],.hero-context--section) .page-intro--section::after {display:none;}
 }
 
 /* The header may grow beyond its single-row minimum when people enlarge
