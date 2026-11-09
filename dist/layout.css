@@ -48,3 +48,5 @@
 .martlet-site-footer :where(a) { display:inline-block; padding-block:.5rem; }
 @media print { .martlet-sidebar,.martlet-split { display:block; } .martlet-sidebar > *,.martlet-split > * { margin-block-end:var(--martlet-layout-gap); } }
 .martlet-page-header__copy::after { content:""; display:block; inline-size:var(--martlet-divider-width); block-size:var(--martlet-divider-thickness); background:var(--martlet-accent); margin-block-start:var(--martlet-layout-gap); }
+
+.martlet-reading-layout__contents--flow { position:static; max-block-size:none; overflow:visible; }
