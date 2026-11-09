@@ -33,6 +33,7 @@ html[data-appearance=dark] .example-prose :is(blockquote,.footnotes) { color: va
 .example-prose :not(pre) > code { background: var(--ex-panel); padding: .1em .3em; }
 .example-prose math { font-size: 1.4rem; margin-block: 1rem; }
 .example-actions, .example-context { display: flex; flex-wrap: wrap; gap: .75rem; margin-block: 1.5rem; }
+.example-actions { justify-content: center; }
 .example-context { border-bottom: 1px solid var(--ex-line); padding-bottom: 1rem; }
 .example-notice { background: var(--ex-panel); border-inline-start: 3px solid var(--ex-link); padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: .95rem; }
 .example-notice p:last-child { margin: 0; }

@@ -28,7 +28,6 @@ html[data-appearance=dark] body
 .dash-sidebar li { margin:0; }
 .dash-sidebar nav a { display:block; padding:.7rem .5rem; font-family:var(--dash-ui-font); font-size:.95rem; }
 .dash-sidebar a[aria-current=page] { font-weight:700; border-inline-start:3px solid var(--ex-link); background:var(--ex-panel); }
-.dash-sidebar__caption { color:var(--ex-muted); font-size:.9rem; border-top:1px solid var(--ex-line); padding-top:1.5rem; }
 .dash-nav-toggle { display:none !important; }
 .dash-heading { margin-bottom:2rem; }
 .example-root .dash-heading h1 { font-size:clamp(2rem,3.4vw,3rem); margin:.5rem 0 1rem; line-height:1.15; }
@@ -63,9 +62,11 @@ html[data-appearance=dark] body
 .dash-chart summary { cursor:pointer; font:700 .9rem/1.5 var(--dash-ui-font); padding:.5rem 0; }
 .dash-app .example-table-scroll { background:var(--ex-bg); }
 .dash-app table { font-family:var(--dash-ui-font); font-variant-numeric:tabular-nums; }
-.dash-app :is(th,td) { padding:.8rem .85rem; }
+.dash-app :is(th,td) { padding:.75rem .85rem; vertical-align:middle; }
 .dash-app tbody th { font-weight:600; }
 .dash-app table button { white-space:normal; }
+.dash-app caption { padding:.75rem .85rem; text-align:start; }
+.dash-app #people-table :is(th,td):first-child { width:3rem; min-width:3rem; }
 .dash-error { color:var(--dash-danger); border-inline-start:3px solid currentColor; padding:1rem; background:var(--ex-panel); }
 .dash-state { padding:2rem; border:1px dashed var(--ex-line); margin:1rem 0; }
 .dash-badge { display:inline-block; border:1px solid currentColor; padding:.2rem .5rem; font:700 .8rem/1.5 var(--dash-ui-font); }
@@ -95,7 +96,6 @@ html[data-appearance=dark] body
  .dash-app[data-ready] .dash-nav-toggle { display:inline-flex !important; }
  .dash-app[data-ready] .dash-nav-toggle[aria-expanded=false] + nav { display:none; }
  .dash-sidebar ul { display:flex; flex-wrap:wrap; gap:.5rem; }
- .dash-sidebar__caption { display:none; }
 }
 @media(max-width:42rem) {
  .dash-layout { width:calc(100% - 2rem); }
@@ -128,10 +128,10 @@ html[data-appearance=dark] .dash-app .eyebrow { color: var(--ex-link); }
 
 .dash-app .example-table-scroll { max-width:100%; overflow:auto; border:1px solid var(--ex-line); }
 .dash-app table { border-collapse:collapse; width:100%; }
-.dash-app :is(th,td) { text-align:start; border-bottom:1px solid var(--ex-line); min-width:7rem; }
+.dash-app :is(th,td) { text-align:start; border-bottom:1px solid var(--ex-line); min-width:7rem; vertical-align:middle; }
 
 
-.dash-app fieldset { min-width:0; border:0; padding:0; }
+.dash-app fieldset { min-width:0; border:0; margin:0; padding:0; }
 
 .dash-app [hidden] { display:none !important; }
 .admin-notice { padding:1rem; border-inline-start:3px solid var(--ex-link); background:var(--ex-panel); }
@@ -211,14 +211,6 @@ body.martlet.dashboard-page .dash-sidebar nav a[aria-current=page] {
   border-inline-start-color:var(--dashboard-navigation-accent);
   background:var(--martlet-panel);
   font-weight:700;
-}
-body.martlet.dashboard-page .dash-sidebar__caption {
-  display:block;
-  margin:1.5rem 0 1rem;
-  padding-top:1.5rem;
-  border-top:1px solid var(--martlet-line);
-  color:var(--martlet-muted);
-  font:.9rem/1.7 var(--martlet-font-sans);
 }
 body.martlet.dashboard-page .dash-nav-toggle { display:none; }
 @media(max-width:64rem) {
