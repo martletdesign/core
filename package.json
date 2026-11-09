@@ -1,11 +1,11 @@
 {
   "name": "@martlet/core",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "private": true,
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/build.mjs && node scripts/build-foundation.mjs",
+    "build": "node scripts/build.mjs && node scripts/build-foundation.mjs && node scripts/export-reference.mjs",
     "test": "node --test scripts/*.test.mjs",
     "prepack": "npm run build && npm test"
   },
@@ -53,7 +53,11 @@
     "./source-profile.css": "./dist/source-profile.css",
     "./language.json": "./dist/language.json",
     "./forms.css": "./dist/forms.css",
-    "./site.css": "./dist/site.css"
+    "./site.css": "./dist/site.css",
+    "./reference.css": "./dist/reference.css",
+    "./reference-fonts.css": "./dist/reference-fonts.css",
+    "./reference-shell.css": "./dist/reference-shell.css",
+    "./dashboards.css": "./dist/dashboards.css"
   },
   "publishConfig": {
     "access": "public"

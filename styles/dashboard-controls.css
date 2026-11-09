@@ -1,0 +1,33 @@
+/* Control roles reuse Core tokens. No page owns an input or command palette. */
+body.martlet.dashboard-page main :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea) {
+  box-sizing:border-box; width:100%; max-width:100%; min-width:0;
+  height:var(--martlet-control-height); min-height:var(--martlet-control-height);
+  margin:0; padding:.5rem .75rem; border:1px solid var(--martlet-input-border);
+  border-radius:var(--martlet-radius-sm); font:1rem/normal var(--martlet-font-sans);
+  background:var(--martlet-input-bg); color:var(--martlet-input-text);
+}
+body.martlet.dashboard-page main textarea { height:auto; min-height:7rem; line-height:1.5; }
+body.martlet.dashboard-page main :is(input,textarea)::placeholder { color:var(--martlet-input-placeholder); opacity:1; }
+body.martlet.dashboard-page main :is(input,select,textarea):disabled { background:var(--martlet-disabled-bg); color:var(--martlet-disabled-text); cursor:default; }
+body.martlet.dashboard-page main :is(input,select,textarea)[aria-invalid=true] { border-color:var(--martlet-danger); }
+body.martlet.dashboard-page main :is(label,legend) { color:var(--martlet-text); font:700 .9rem/1.5 var(--martlet-font-sans); }
+body.martlet.dashboard-page main label { display:block; margin:0 0 .5rem; }
+body.martlet.dashboard-page main legend { margin:0 0 1rem; padding:0; }
+body.martlet.dashboard-page main label.example-checkbox { display:flex; flex-direction:row; align-items:center; gap:.75rem; min-height:2.75rem; margin-block:1rem; }
+body.martlet.dashboard-page main :is(input[type=checkbox],input[type=radio]) { flex:0 0 1.2rem; width:1.2rem; height:1.2rem; min-width:0; min-height:0; max-width:1.2rem; margin:0; padding:0; accent-color:var(--martlet-accent); }
+body.martlet.dashboard-page main .martlet-button {
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  min-height:var(--martlet-control-height); min-width:0; max-width:100%;
+  margin:.75rem .5rem .25rem 0; padding:var(--martlet-button-padding);
+  border:1px solid var(--martlet-accent); border-radius:var(--martlet-radius-control);
+  background:var(--martlet-accent); color:var(--martlet-on-accent);
+  font:700 1rem/1.5 var(--martlet-font-sans); text-decoration:none; box-shadow:none;
+  white-space:normal; overflow-wrap:anywhere; cursor:pointer;
+}
+body.martlet.dashboard-page main .martlet-button:hover { background:var(--martlet-accent-hover); color:var(--martlet-on-accent); }
+body.martlet.dashboard-page main .martlet-button--secondary { background:var(--martlet-button-secondary-bg); color:var(--martlet-button-secondary-text); border-color:var(--martlet-border-strong); }
+body.martlet.dashboard-page main .martlet-button--secondary:hover { background:var(--martlet-button-secondary-hover); color:var(--martlet-button-secondary-text); }
+body.martlet.dashboard-page main .martlet-button:disabled { background:var(--martlet-disabled-bg); color:var(--martlet-disabled-text); border-color:var(--martlet-disabled-bg); cursor:default; opacity:1; }
+body.martlet.dashboard-page main :focus-visible { outline:3px solid var(--martlet-focus-ring); outline-offset:3px; }
+body.martlet.dashboard-page main .dash-actions .martlet-button { margin:0; }
+@media(max-width:42rem) { body.martlet.dashboard-page main .martlet-button { padding-inline:min(1rem,12px); } }
