@@ -1,0 +1,15 @@
+/* Compatibility aliases; source aliases now provided by Core. */
+/* Core's generated legacy.css is loaded from the entry point. */
+
+/* Default Martlet composition: blue, gold and white, with warm bronze-led
+   navigation and emphasis. Configurable roles; source tokens remain available. */
+:root {
+  --martlet-shell-bg: #25170b;
+  --martlet-gold-bright: #fee46e;
+  --martlet-bronze: #9a6b15;
+  --martlet-brown: #65401f;
+  --martlet-action-bg: #80550f;
+  --martlet-action-hover: #65401f;
+  --martlet-action-text: #ffffff;
+  --martlet-secondary-blue: #255f91;
+}
