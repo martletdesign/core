@@ -130,7 +130,24 @@ jobs:
           node scripts/tag-release-cli.mjs verify-registry "$ARCHIVE"
           mkdir "$RUNNER_TEMP/core-publication-consumer"
           printf '{"name":"publication-verification","version":"0.0.0","private":true}\n' > "$RUNNER_TEMP/core-publication-consumer/package.json"
-          (cd "$RUNNER_TEMP/core-publication-consumer" && npm install --ignore-scripts --no-audit --no-fund --save-exact "$PACKAGE_NAME@$PACKAGE_VERSION" && npm audit signatures --json --include-attestations > "$RUNNER_TEMP/core-publication-audit.json")
+          (
+            cd "$RUNNER_TEMP/core-publication-consumer"
+            installed=0
+            for attempt in {1..24}; do
+              if npm install --prefer-online --ignore-scripts --no-audit --no-fund --save-exact "$PACKAGE_NAME@$PACKAGE_VERSION" > "$RUNNER_TEMP/core-publication-install.log" 2>&1; then
+                cat "$RUNNER_TEMP/core-publication-install.log"
+                installed=1
+                break
+              fi
+              cat "$RUNNER_TEMP/core-publication-install.log"
+              # Version metadata and the install packument can propagate separately.
+              # Retry only a missing version; other install failures remain fatal.
+              grep -q 'ETARGET' "$RUNNER_TEMP/core-publication-install.log" || exit 1
+              sleep 5
+            done
+            test "$installed" = 1
+            npm audit signatures --json --include-attestations > "$RUNNER_TEMP/core-publication-audit.json"
+          )
           node scripts/tag-release-cli.mjs verify-stage-provenance "$RUNNER_TEMP/core-publication-audit.json" "$ARCHIVE"
       - name: Create the exact immutable tag and dispatch existing source-release completion
         env:
