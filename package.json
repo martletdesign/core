@@ -1,6 +1,6 @@
 {
   "name": "@martlet/core",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -54,10 +54,12 @@
     "./language.json": "./dist/language.json",
     "./forms.css": "./dist/forms.css",
     "./site.css": "./dist/site.css",
-    "./reference.css": "./dist/reference.css",
+    "./martlet.css": "./dist/martlet.css",
     "./reference-fonts.css": "./dist/reference-fonts.css",
     "./reference-shell.css": "./dist/reference-shell.css",
-    "./dashboards.css": "./dist/dashboards.css"
+    "./dashboards.css": "./dist/dashboards.css",
+    "./react.css": "./dist/react.css",
+    "./react-reference.css": "./dist/react-reference.css"
   },
   "publishConfig": {
     "access": "public"

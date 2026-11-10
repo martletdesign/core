@@ -13,7 +13,7 @@ body.martlet.dashboard-page main :is(input,select,textarea)[aria-invalid=true] {
 body.martlet.dashboard-page main :is(label,legend) { color:var(--martlet-text); font:700 .9rem/1.5 var(--martlet-font-sans); }
 body.martlet.dashboard-page main label { display:block; margin:0 0 .5rem; }
 body.martlet.dashboard-page main legend { margin:0 0 1rem; padding:0; }
-body.martlet.dashboard-page main label.example-checkbox { display:flex; flex-direction:row; align-items:center; gap:.75rem; min-height:2.75rem; margin-block:1rem; }
+body.martlet.dashboard-page main label.example-checkbox { display:flex; flex-direction:row; align-items:center; gap:.75rem; min-height:2.75rem; margin-block:.75rem 0; }
 body.martlet.dashboard-page main :is(input[type=checkbox],input[type=radio]) { flex:0 0 1.2rem; width:1.2rem; height:1.2rem; min-width:0; min-height:0; max-width:1.2rem; margin:0; padding:0; accent-color:var(--martlet-accent); }
 body.martlet.dashboard-page main .martlet-button {
   display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
@@ -29,5 +29,15 @@ body.martlet.dashboard-page main .martlet-button--secondary { background:var(--m
 body.martlet.dashboard-page main .martlet-button--secondary:hover { background:var(--martlet-button-secondary-hover); color:var(--martlet-button-secondary-text); }
 body.martlet.dashboard-page main .martlet-button:disabled { background:var(--martlet-disabled-bg); color:var(--martlet-disabled-text); border-color:var(--martlet-disabled-bg); cursor:default; opacity:1; }
 body.martlet.dashboard-page main :focus-visible { outline:3px solid var(--martlet-focus-ring); outline-offset:3px; }
-body.martlet.dashboard-page main .dash-actions .martlet-button { margin:0; }
+/* Containers own command spacing; table controls stay centered in their cells. */
+body.martlet.dashboard-page main :is(.dash-actions,.dash-form-actions,.example-pagination) .martlet-button,
+body.martlet.dashboard-page main .dash-app table button { margin:0; }
+body.martlet.dashboard-page main .dash-controls .example-help { margin:.375rem 0 0; font:.875rem/1.5 var(--martlet-font-sans); color:var(--martlet-muted); }
+body.martlet.dashboard-page main .dash-form-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.75rem; margin:1rem 0 0; }
+body.martlet.dashboard-page main :is(.dash-dialog .dash-actions,.example-pagination) { justify-content:center; }
 @media(max-width:42rem) { body.martlet.dashboard-page main .martlet-button { padding-inline:min(1rem,12px); } }
+
+/* Preserve room for native date segments and picker icons with enlarged text. */
+@media(max-width:42rem) {
+  body.martlet.dashboard-page main :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea) { padding-inline:min(.75rem,8px); }
+}
