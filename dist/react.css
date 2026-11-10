@@ -54,7 +54,7 @@
 .martlet-disclosure > summary { cursor:pointer; min-block-size:2.8rem; padding:.6rem .25rem; font-family:var(--martlet-font-sans); }
 /* TOC anatomy follows the document index and inline article source objects. */
 .martlet-contents { min-inline-size:0; font:.88rem/1.5 var(--martlet-font-sans); }
-.martlet-contents > strong { display:block; margin-block-end:.75rem; color:var(--martlet-color-gold-600); font:700 .78rem/1.5 var(--martlet-font-sans); letter-spacing:.1em; text-transform:uppercase; }
+.martlet-contents > strong { display:block; margin-block-end:.75rem; color:var(--martlet-color-gold-700); font:700 .78rem/1.5 var(--martlet-font-sans); letter-spacing:.1em; text-transform:uppercase; }
 .martlet-contents ul { margin:0; padding:0; list-style:none; }
 .martlet-contents li { margin:.25rem 0; padding-inline-start:.85rem; }
 .martlet-contents li[data-depth="2"] { padding-inline-start:0; font-weight:700; margin-block-start:1.25rem; }
@@ -176,6 +176,12 @@
 /* Bounded application labels must shrink at enlarged text sizes. Prose is separate. */
 .martlet-app-header > *, .martlet-app-utilities > * { min-inline-size:0; max-inline-size:100%; }
 .martlet-app-brand, .martlet-app-header nav a { overflow-wrap:anywhere; }
+.martlet-button { max-inline-size:100%; overflow-wrap:anywhere; white-space:normal; }
+.martlet-checkbox, .martlet-radio, .martlet-switch { max-inline-size:100%; overflow-wrap:anywhere; }
+.martlet-checkbox > span, .martlet-radio > span, .martlet-switch > span:not(.martlet-switch-control) { min-inline-size:0; }
+.martlet-field, .martlet-fieldset, .martlet-notice, .martlet-error-summary, .martlet-badge { overflow-wrap:anywhere; }
+.martlet-field, .martlet-error-summary { grid-template-columns:minmax(0,1fr); }
+.martlet-field > *, .martlet-error-summary > * { min-inline-size:0; }
 .martlet-tabs [role="tab"] { max-inline-size:100%; min-inline-size:0; }
 
 
