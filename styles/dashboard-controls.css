@@ -36,3 +36,8 @@ body.martlet.dashboard-page main .dash-controls .example-help { margin:.375rem 0
 body.martlet.dashboard-page main .dash-form-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.75rem; margin:1rem 0 0; }
 body.martlet.dashboard-page main :is(.dash-dialog .dash-actions,.example-pagination) { justify-content:center; }
 @media(max-width:42rem) { body.martlet.dashboard-page main .martlet-button { padding-inline:min(1rem,12px); } }
+
+/* Preserve room for native date segments and picker icons with enlarged text. */
+@media(max-width:42rem) {
+  body.martlet.dashboard-page main :is(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea) { padding-inline:min(.75rem,8px); }
+}

@@ -1,3 +1,4 @@
+.scientific-page :is(h1,h2,h3,h4,h5,h6) { color:var(--martlet-text-strong); }
 .science-workspace { max-width:75rem; margin:2rem auto; padding:0 1rem; }
 :where(body.martlet,body.martlet-source-profile) .science-workspace { font-family:var(--martlet-font-sans, Lato, sans-serif); --science-action:var(--martlet-accent); --science-action-text:var(--martlet-on-accent); }
 :where(body.krigsvold,body.krigsvold-source-profile) .science-workspace { font-family:var(--krigsvold-font-sans, Roboto, sans-serif); --science-action:var(--krigsvold-accent); --science-action-text:var(--krigsvold-on-accent); }
