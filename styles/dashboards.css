@@ -22,7 +22,7 @@ body.martlet.dashboard-page {
 html[data-appearance=dark] body
 .dash-app { padding-block:2rem; }
 .dash-layout { display:grid; grid-template-columns:14rem minmax(0,1fr); gap:clamp(1.5rem,3vw,3rem); max-width:94rem; width:calc(100% - 3rem); margin-inline:auto; }
-.dash-main, .dash-sidebar, .dash-panel, .dash-grid, .dash-controls > div { min-width:0; }
+.dash-main, .dash-sidebar, .dash-panel, .dash-grid, .dash-controls > * { min-width:0; }
 .dash-sidebar { align-self:start; position:sticky; top:7rem; max-height:calc(100dvh - 8rem); overflow:auto; padding:1.25rem; }
 .dash-sidebar ul { list-style:none; padding:0; margin:1.5rem 0; }
 .dash-sidebar li { margin:0; }
@@ -102,7 +102,7 @@ html[data-appearance=dark] body
  .dash-grid, .dash-editor-grid { grid-template-columns:1fr; }
  .dash-grid > .dash-panel { grid-column:auto !important; }
  .dash-panel, .dash-toolbar, .dash-sidebar { padding:1rem; }
- .dash-controls { grid-template-columns:1fr; }
+ .dash-controls { grid-template-columns:minmax(0,1fr); }
  .dash-heading__meta { display:block; }
  .dash-heading__meta a { display:block; margin-top:.75rem; }
 }
