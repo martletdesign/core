@@ -27,3 +27,4 @@ jobs:
         with:
           name: martlet-npm
           path: dist/
+          retention-days: 3
